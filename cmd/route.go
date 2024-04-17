@@ -19,13 +19,13 @@ func registerRoutes() {
 
 	// define application routes
 	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte("Hello, World!"))
+		w.Write([]byte("Welcome to Mailer!!"))
 	})
 
 	// auth routes
 	r.Post("/register", SignUpHandler)
 	r.Post("/login", LoginHandler)
-	r.Post("/logout", LoginHandler)
+	r.Post("/logout", LogoutHandler)
 
 	// mailer routes
 	r.Get("/plans", GetPlansHandler)

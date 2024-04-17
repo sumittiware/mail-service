@@ -31,7 +31,6 @@ type UserSignUpFlow struct {
 
 func (f *UserSignUpFlow) Run() UserSignUpResponseBody {
 	// validate the request body
-
 	if err := f.validate(); err != nil {
 		return UserSignUpResponseBody{
 			Error: err,
@@ -43,13 +42,11 @@ func (f *UserSignUpFlow) Run() UserSignUpResponseBody {
 }
 
 func (f *UserSignUpFlow) validate() error {
-	// validate the request body
+	// TODO : validate the request body
 	return nil
 }
 
 func (f *UserSignUpFlow) do() UserSignUpResponseBody {
-	// create the user in the supabase
-
 	response, err := config.ApplicationConfig.DB.Auth.SignUp(f.Context, dto.SignUpRequest{
 		Email:    f.RequestBody.Email,
 		Password: f.RequestBody.Password,
@@ -61,6 +58,7 @@ func (f *UserSignUpFlow) do() UserSignUpResponseBody {
 			Error: err,
 		}
 	}
+
 	// Create the user models based on this
 	user := data.User{
 		ID:        response.User.ID,
