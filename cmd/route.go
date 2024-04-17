@@ -29,6 +29,11 @@ func registerRoutes() {
 
 	// mailer routes
 	r.Get("/plans", GetPlansHandler)
+	// r.Post("/plan", CreatePlanHandler)
+	// r.Post("/subscribe/{id}", SubscribePlanHandler)
+
+	// send mail service!
+	// r.Post("/send", SendMailHandler)
 
 	if err := http.ListenAndServe(":8080", r); err != nil {
 		log.Fatalf(fmt.Sprintf("Failed to start server: %v", err))
