@@ -21,11 +21,11 @@ func InitDb() *supabase.Client {
 func connectToDB() *supabase.Client {
 	counts := 10
 
-	dbUrl := os.Getenv("DATABASE_URL")
+	dbHost := os.Getenv("DATABASE_HOST")
 	apiKey := os.Getenv("APIKEY")
 
 	for {
-		connection, err := openDB(dbUrl, apiKey)
+		connection, err := openDB(dbHost, apiKey)
 
 		if err != nil {
 			log.Println("DB is not yet ready")
@@ -45,10 +45,10 @@ func connectToDB() *supabase.Client {
 	}
 }
 
-func openDB(dbUrl, apiKey string) (*supabase.Client, error) {
+func openDB(dbHost, apiKey string) (*supabase.Client, error) {
 	conf := supabase.Config{
 		ApiKey:     apiKey,
-		ProjectRef: dbUrl,
+		ProjectRef: dbHost,
 		Debug:      true,
 	}
 	return supabase.New(conf)

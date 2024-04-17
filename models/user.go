@@ -7,16 +7,15 @@ import (
 
 // User is the structure which holds one user from the database.
 type User struct {
-	ID        string
-	Email     string
-	FirstName string
-	LastName  string
-	Password  string
-	Active    int
-	IsAdmin   int
-	CreatedAt time.Time
-	UpdatedAt time.Time
-	Plan      *Plan
+	ID        string    `json:"id"`
+	Email     string    `json:"email"`
+	FirstName string    `json:"first_name"`
+	LastName  string    `json:"last_name"`
+	Active    bool      `json:"user_active"`
+	IsAdmin   bool      `json:"is_admin"`
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
+	Plan      *Plan     `json:"plan"`
 }
 
 // GetAll returns a slice of all users, sorted by last name
@@ -72,6 +71,17 @@ func (u *User) GetOne(id string) (*User, error) {
 	user.Plan = &plan
 
 	return &user, nil
+}
+
+func (u *User) Save() error {
+	ctx := context.Background()
+	query := db.DB.From(userTable).Insert(u)
+
+	if err := query.Execute(ctx, nil); err != nil {
+		return err
+	}
+
+	return nil
 }
 
 // Update updates one user in the database, using the information

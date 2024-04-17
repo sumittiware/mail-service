@@ -11,6 +11,8 @@ import (
 	supabase "github.com/lengzuo/supa"
 )
 
+var ApplicationConfig *Config
+
 type Config struct {
 	DB       *supabase.Client
 	InfoLog  *log.Logger
