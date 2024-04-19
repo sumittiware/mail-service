@@ -6,6 +6,7 @@ CREATE TABLE public.plans (
                               id integer NOT NULL,
                               plan_name character varying(255),
                               plan_amount integer,
+                              mail_limit integer,
                               created_at timestamp without time zone,
                               updated_at timestamp without time zone
 );

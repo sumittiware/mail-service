@@ -2,20 +2,21 @@ package data
 
 import (
 	"context"
+	"log"
 	"time"
 )
 
 // User is the structure which holds one user from the database.
 type User struct {
-	ID        string    `json:"id"`
+	ID        int       `json:"id"`
+	UserID    string    `json:"user_id"`
 	Email     string    `json:"email"`
 	FirstName string    `json:"first_name"`
 	LastName  string    `json:"last_name"`
-	Active    bool      `json:"user_active"`
-	IsAdmin   bool      `json:"is_admin"`
+	Active    int       `json:"user_active"`
+	IsAdmin   int       `json:"is_admin"`
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
-	Plan      *Plan     `json:"plan"`
 }
 
 // GetAll returns a slice of all users, sorted by last name
@@ -39,14 +40,15 @@ func GetByEmail(email string) (*User, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), dbTimeout)
 	defer cancel()
 
-	var user *User
+	var users *[]User
 
 	query := db.DB.From(userTable).Select("*").Eq("email", email)
-	if err := query.Execute(ctx, &user); err != nil {
+	if err := query.Execute(ctx, &users); err != nil {
+		log.Fatalf("Error getting user by email: %v", err)
 		return nil, err
 	}
-
-	return user, nil
+	log.Println("User: ", users)
+	return nil, nil
 }
 
 // GetOne returns one user by id
@@ -54,23 +56,24 @@ func GetOne(id string) (*User, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), dbTimeout)
 	defer cancel()
 
-	var user *User
-	query := db.DB.From(userTable).Select("*").Eq("id", id)
+	var user *[]User
+	query := db.DB.From(userTable).Select("*").Eq("user_id", id)
 
 	if err := query.Execute(ctx, &user); err != nil {
+		log.Fatalf("Error getting user by id: %v", err)
 		return nil, err
 	}
+	log.Println("User: ", user)
 
-	var plan *Plan
-	query = db.DB.From(planTable).Select("*").Eq("id", user.ID)
+	// var plan *[]Plan
 
-	if err := query.Execute(ctx, &plan); err != nil {
-		return nil, err
-	}
+	// query = db.DB.From(planTable).Select("*").Eq("user_id", user[0].UserID)
 
-	user.Plan = plan
+	// if err := query.Execute(ctx, &plan); err != nil {
+	// 	return nil, err
+	// }
 
-	return user, nil
+	return nil, nil
 }
 
 func (u *User) Save() error {
@@ -119,7 +122,7 @@ func (u *User) Delete() error {
 	ctx, cancel := context.WithTimeout(context.Background(), dbTimeout)
 	defer cancel()
 
-	query := db.DB.From(userTable).Delete().Eq("id", u.ID)
+	query := db.DB.From(userTable).Delete().Eq("user_id", u.UserID)
 
 	if err := query.Execute(ctx, nil); err != nil {
 		return err

@@ -39,6 +39,9 @@ func (f *SendMailFlow) do() SendMailResponse {
 		Subject: f.Body.Subject,
 		Data:    f.Body.Body,
 	}
+
+	// This will send the data to the Mail channel that will handle the sending of the mail
+	// using the ListernToMail() method
 	config.ApplicationConfig.Wait.Add(1)
 	config.ApplicationConfig.Mailer.MailerChan <- message
 
