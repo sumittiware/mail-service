@@ -3,6 +3,7 @@ package data
 import (
 	"bytes"
 	"fmt"
+	"log"
 	"sync"
 	"text/template"
 	"time"
@@ -69,7 +70,7 @@ func (m *Mail) SendMail(msg Message, errorChan chan error) {
 	if err != nil {
 		errorChan <- err
 	}
-
+	log.Println("Sending the mail!!")
 	server := mail.NewSMTPClient()
 	server.Host = m.Host
 	server.Port = m.Port
@@ -82,8 +83,11 @@ func (m *Mail) SendMail(msg Message, errorChan chan error) {
 
 	smtpClient, err := server.Connect()
 	if err != nil {
+		log.Fatal(err)
 		errorChan <- err
 	}
+
+	log.Print("Okk this might go but more")
 
 	email := mail.NewMSG()
 	email.SetFrom(msg.From).AddTo(msg.To).SetSubject(msg.Subject)
@@ -96,11 +100,14 @@ func (m *Mail) SendMail(msg Message, errorChan chan error) {
 			email.AddAttachment(x)
 		}
 	}
-
+	log.Print("Okk this might go but more and more!")
 	err = email.Send(smtpClient)
 	if err != nil {
+		log.Fatal(err)
 		errorChan <- err
 	}
+
+	log.Println("Mail sent successfully!!")
 }
 
 func (m *Mail) buildHTMLMessage(msg Message) (string, error) {
