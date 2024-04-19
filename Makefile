@@ -1,6 +1,6 @@
 BINARY_NAME=myapp
-DATABASE_HOST="aqsofzhcugpxbjtlnizp"
-APIKEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFxc29memhjdWdweGJqdGxuaXpwIiwicm9sZSI6ImFub24iLCJpYXQiOjE2OTM0NjEyMDIsImV4cCI6MjAwOTAzNzIwMn0.bEowq4cL4nc3XkdxzCiMx7l8SjkDq_kURu79NSMdkiA"
+include config.env
+export $(env)
 
 ## build: Build binary
 build:

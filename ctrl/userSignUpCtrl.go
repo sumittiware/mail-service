@@ -61,15 +61,14 @@ func (f *UserSignUpFlow) do() UserSignUpResponseBody {
 
 	// Create the user models based on this
 	user := data.User{
-		ID:        response.User.ID,
+		UserID:    response.User.ID,
 		Email:     f.RequestBody.Email,
 		FirstName: f.RequestBody.FirstName,
 		LastName:  f.RequestBody.LastName,
-		IsAdmin:   false,
-		Active:    true,
+		IsAdmin:   0,
+		Active:    1,
 		CreatedAt: response.User.CreatedAt,
 		UpdatedAt: response.User.UpdatedAt,
-		Plan:      nil,
 	}
 	// create the user in our DB
 	if err := user.Save(); err != nil {
