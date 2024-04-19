@@ -7,20 +7,19 @@ import (
 
 // User is the structure which holds one user from the database.
 type User struct {
-	ID        string
-	Email     string
-	FirstName string
-	LastName  string
-	Password  string
-	Active    int
-	IsAdmin   int
-	CreatedAt time.Time
-	UpdatedAt time.Time
-	Plan      *Plan
+	ID        string    `json:"id"`
+	Email     string    `json:"email"`
+	FirstName string    `json:"first_name"`
+	LastName  string    `json:"last_name"`
+	Active    bool      `json:"user_active"`
+	IsAdmin   bool      `json:"is_admin"`
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
+	Plan      *Plan     `json:"plan"`
 }
 
 // GetAll returns a slice of all users, sorted by last name
-func (u *User) GetAll() ([]*User, error) {
+func GetAll() ([]*User, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), dbTimeout)
 	defer cancel()
 
@@ -36,42 +35,53 @@ func (u *User) GetAll() ([]*User, error) {
 }
 
 // GetByEmail returns one user by email
-func (u *User) GetByEmail(email string) (*User, error) {
+func GetByEmail(email string) (*User, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), dbTimeout)
 	defer cancel()
 
-	var user User
+	var user *User
 
 	query := db.DB.From(userTable).Select("*").Eq("email", email)
 	if err := query.Execute(ctx, &user); err != nil {
 		return nil, err
 	}
 
-	return &user, nil
+	return user, nil
 }
 
 // GetOne returns one user by id
-func (u *User) GetOne(id string) (*User, error) {
+func GetOne(id string) (*User, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), dbTimeout)
 	defer cancel()
 
-	var user User
+	var user *User
 	query := db.DB.From(userTable).Select("*").Eq("id", id)
 
 	if err := query.Execute(ctx, &user); err != nil {
 		return nil, err
 	}
 
-	var plan Plan
+	var plan *Plan
 	query = db.DB.From(planTable).Select("*").Eq("id", user.ID)
 
 	if err := query.Execute(ctx, &plan); err != nil {
 		return nil, err
 	}
 
-	user.Plan = &plan
+	user.Plan = plan
 
-	return &user, nil
+	return user, nil
+}
+
+func (u *User) Save() error {
+	ctx := context.Background()
+	query := db.DB.From(userTable).Insert(u)
+
+	if err := query.Execute(ctx, nil); err != nil {
+		return err
+	}
+
+	return nil
 }
 
 // Update updates one user in the database, using the information

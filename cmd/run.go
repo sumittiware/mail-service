@@ -7,8 +7,6 @@ import (
 	"sync"
 )
 
-var app *config.Config
-
 func Start() {
 
 	// connect to the database
@@ -20,14 +18,14 @@ func Start() {
 	wg := sync.WaitGroup{}
 
 	// set up the application config
-	app = &config.Config{
+	config.ApplicationConfig = &config.Config{
 		DB:     db,
 		Wait:   &wg,
 		Models: data.New(db),
 	}
 
 	// listen for shutdown signals
-	go app.ListenForShutdown()
+	go config.ApplicationConfig.ListenForShutdown()
 
 	// Register all routes
 	registerRoutes()
