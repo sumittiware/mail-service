@@ -8,7 +8,6 @@ import (
 )
 
 func Start() {
-
 	// connect to the database
 	db := db.InitDb()
 
@@ -23,7 +22,9 @@ func Start() {
 		Wait:   &wg,
 		Models: data.New(db),
 	}
-
+	config.ApplicationConfig.Mailer = config.ApplicationConfig.CreateMail()
+	// Listen to mails here!
+	go config.ApplicationConfig.ListenForMail()
 	// listen for shutdown signals
 	go config.ApplicationConfig.ListenForShutdown()
 

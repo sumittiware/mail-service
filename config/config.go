@@ -19,6 +19,7 @@ type Config struct {
 	ErrorLog *log.Logger
 	Wait     *sync.WaitGroup
 	Models   data.Models
+	Mailer   data.Mail
 }
 
 func (app Config) ListenForShutdown() {
@@ -27,6 +28,41 @@ func (app Config) ListenForShutdown() {
 	<-quit
 	app.shutdown()
 	os.Exit(0)
+}
+
+func (app *Config) ListenForMail() {
+	for {
+		select {
+		case msg := <-app.Mailer.MailerChan:
+			go app.Mailer.SendMail(msg, app.Mailer.ErrorChan)
+		case err := <-app.Mailer.ErrorChan:
+			app.ErrorLog.Println(err)
+		case <-app.Mailer.DoneChan:
+			return
+		}
+	}
+}
+
+func (app *Config) CreateMail() data.Mail {
+	// create channels
+	errorChan := make(chan error)
+	mailerChan := make(chan data.Message, 100)
+	mailerDoneChan := make(chan bool)
+
+	m := data.Mail{
+		Domain:      "localhost",
+		Host:        "localhost",
+		Port:        1025,
+		Encryption:  "none",
+		FromName:    "Info",
+		FromAddress: "info@mycompany.com",
+		Wait:        app.Wait,
+		ErrorChan:   errorChan,
+		MailerChan:  mailerChan,
+		DoneChan:    mailerDoneChan,
+	}
+
+	return m
 }
 
 func (app *Config) shutdown() {
