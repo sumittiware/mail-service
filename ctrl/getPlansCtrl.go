@@ -1,6 +1,10 @@
 package ctrl
 
-import data "mail-service/models"
+import (
+	"log"
+	"mail-service/config"
+	data "mail-service/models"
+)
 
 type GetPlansRequestBody struct {
 }
@@ -31,19 +35,16 @@ func (f *GetPlansFlow) validate() error {
 }
 
 func (f *GetPlansFlow) do() GetPlansResponseBody {
-	// TODO : add the get all plans logic
+	plans, err := config.ApplicationConfig.Models.Plan.GetAll()
 
-	// if err != nil {
-	// 	return GetPlansResponseBody{
-	// 		Error: err,
-	// 	}
-	// }
-
-	// return GetPlansResponseBody{
-	// 	Plans: plans,
-	// }
-
+	if err != nil {
+		log.Println("Error getting plans: ", err)
+		return GetPlansResponseBody{
+			Error: err,
+		}
+	}
 	return GetPlansResponseBody{
+		Plans: plans,
 		Error: nil,
 	}
 }
