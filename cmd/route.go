@@ -34,7 +34,7 @@ func registerRoutes() {
 	// r.Post("/subscribe/{id}", SubscribePlanHandler)
 
 	// send mail service!
-	// r.Post("/send", SendMailHandler)
+	r.Post("/send", SendMailHandler)
 
 	r.Get("/health", func(w http.ResponseWriter, r *http.Request) {
 		mail := data.Mail{
