@@ -8,9 +8,9 @@ import (
 
 // Plan is the type for subscription plans
 type Plan struct {
-	ID         string
-	PlanName   string
-	PlanAmount int
+	ID         int    `json:"id"`
+	PlanName   string `json:"plan_name"`
+	PlanAmount int    `json:"plan_amount"`
 	CreatedAt  time.Time
 	UpdatedAt  time.Time
 }
