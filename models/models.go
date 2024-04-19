@@ -30,7 +30,7 @@ type Models struct {
 }
 
 const (
-	userTable     = "user"
-	planTable     = "plan"
-	userPlanTable = "user_plan"
+	userTable     = "users"
+	planTable     = "plans"
+	userPlanTable = "user_plans"
 )
