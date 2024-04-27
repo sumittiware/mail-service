@@ -19,20 +19,28 @@ func registerRoutes() {
 
 	// define application routes
 	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte("Welcome to Mailer!!"))
+		_, err := w.Write([]byte("Welcome to Mailer!!"))
+		if err != nil {
+			log.Fatal(err)
+			return
+		}
 	})
 
+	apiRoutes := chi.NewRouter()
+
 	// auth routes
-	r.Post("/register", SignUpHandler)
-	r.Post("/login", LoginHandler)
-	r.Post("/logout", LogoutHandler)
+	apiRoutes.Post("/register", SignUpHandler)
+	apiRoutes.Post("/login", LoginHandler)
+	apiRoutes.Post("/logout", LogoutHandler)
 
 	// mailer routes
-	r.Get("/plans", GetPlansHandler)
-	r.Post("/subscribe/{id}", SubscribePlanHandler)
+	apiRoutes.Get("/plans", GetPlansHandler)
+	apiRoutes.Post("/subscribe/{id}", SubscribePlanHandler)
 
 	// send mail service!
-	r.Post("/send", SendMailHandler)
+	apiRoutes.Post("/send", SendMailHandler)
+
+	r.Mount("/api", apiRoutes)
 
 	if err := http.ListenAndServe(":8080", r); err != nil {
 		log.Fatalf(fmt.Sprintf("Failed to start server: %v", err))
